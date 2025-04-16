@@ -1,3 +1,4 @@
+
 #root {
   width: 100%;
   min-height: 100vh;
@@ -14,10 +15,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #33C3F0;
+  background: #9B87F5;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0EA5E9;
+  background: #7E69AB;
 }

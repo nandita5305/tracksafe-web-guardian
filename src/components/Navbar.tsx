@@ -1,11 +1,15 @@
 
 import React, { useState, useEffect } from "react";
 import Button from "./Button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Bell } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,18 +26,35 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
+  const handleLogin = () => {
+    navigate("/signin");
+  };
+
+  const handleSignup = () => {
+    navigate("/signup");
+  };
+
+  const handleDashboard = () => {
+    navigate("/dashboard");
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/95 backdrop-blur-sm shadow-sm py-3"
+          ? "bg-gray-100/95 backdrop-blur-sm shadow-sm py-3"
           : "bg-transparent py-5"
       }`}
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="text-2xl font-bold">
+          <a href="/" className="text-2xl font-bold">
             Track<span className="text-tracksafe-blue">Safe</span>
           </a>
 
@@ -64,10 +85,29 @@ const Navbar: React.FC = () => {
               Pricing
             </a>
             <div className="flex items-center space-x-3">
-              <Button variant="outline" size="sm">
-                Log in
-              </Button>
-              <Button size="sm">Buy Now</Button>
+              {user ? (
+                <>
+                  <button className="relative p-2 rounded-full hover:bg-gray-200">
+                    <Bell size={20} />
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  </button>
+                  <Button variant="outline" size="sm" onClick={handleDashboard}>
+                    Dashboard
+                  </Button>
+                  <Button variant="secondary" size="sm" onClick={handleLogout}>
+                    Sign out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" onClick={handleLogin}>
+                    Log in
+                  </Button>
+                  <Button size="sm" onClick={handleSignup}>
+                    Sign up
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
 
@@ -115,12 +155,25 @@ const Navbar: React.FC = () => {
                 Pricing
               </a>
               <div className="flex flex-col space-y-2 pt-2">
-                <Button variant="outline" size="sm" className="w-full">
-                  Log in
-                </Button>
-                <Button size="sm" className="w-full">
-                  Buy Now
-                </Button>
+                {user ? (
+                  <>
+                    <Button variant="outline" size="sm" className="w-full" onClick={handleDashboard}>
+                      Dashboard
+                    </Button>
+                    <Button variant="secondary" size="sm" className="w-full" onClick={handleLogout}>
+                      Sign out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" className="w-full" onClick={handleLogin}>
+                      Log in
+                    </Button>
+                    <Button size="sm" className="w-full" onClick={handleSignup}>
+                      Sign up
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -62,13 +63,13 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-                // TrackSafe custom colors
+                // TrackSafe custom colors - updated to purple theme
                 tracksafe: {
-                    blue: '#33C3F0',
-                    teal: '#0EA5E9',
-                    orange: '#F97316',
-                    red: '#ea384c',
-                    light: '#D3E4FD',
+                    blue: '#9B87F5',    // Light purple
+                    teal: '#7E69AB',    // Secondary purple
+                    orange: '#6E59A5',  // Darker purple 
+                    red: '#8B5CF6',     // Vivid purple
+                    light: '#E5DEFF',   // Very light purple
                 }
 			},
             fontFamily: {
