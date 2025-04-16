@@ -96,6 +96,50 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-tracksafe-blue to-tracksafe-teal bg-clip-text text-transparent;
+  }
+  
+  .bg-gradient {
+    @apply bg-gradient-to-r from-tracksafe-blue to-tracksafe-teal;
+  }
+  
+  .button-gradient {
+    @apply bg-gradient-to-r from-tracksafe-orange to-tracksafe-red;
+  }
+  
+  .transition-all-300 {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
+
+@keyframes pulse-light {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-pulse-light {
+  animation: pulse-light 2s ease-in-out infinite;
 }

@@ -61,8 +61,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+                // TrackSafe custom colors
+                tracksafe: {
+                    blue: '#33C3F0',
+                    teal: '#0EA5E9',
+                    orange: '#F97316',
+                    red: '#ea384c',
+                    light: '#D3E4FD',
+                }
 			},
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+            },
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
