@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useAuth } from '@/context/AuthContext';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -19,6 +20,7 @@ const formSchema = z.object({
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,13 +33,11 @@ const SignIn: React.FC = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      // This is where you would connect to a backend service like Supabase for authentication
-      // For now we'll simulate a successful login
-      localStorage.setItem('user', JSON.stringify({ email: values.email }));
+      await login(values.email, values.password);
       toast.success('Signed in successfully!');
       navigate('/dashboard');
-    } catch (error) {
-      toast.error('Failed to sign in. Please check your credentials.');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in. Please check your credentials.');
       console.error('Login error:', error);
     } finally {
       setIsLoading(false);
@@ -45,11 +45,11 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-tracksafe-light p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-purple-50 p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-2 text-center">
           <CardTitle className="text-3xl font-bold">
-            Track<span className="text-tracksafe-blue">Safe</span>
+            Track<span className="text-purple-600">Safe</span>
           </CardTitle>
           <CardDescription>
             Sign in to access your safety dashboard
@@ -86,7 +86,7 @@ const SignIn: React.FC = () => {
               />
               <Button
                 type="submit"
-                className="w-full bg-tracksafe-blue hover:bg-tracksafe-teal"
+                className="w-full bg-purple-600 hover:bg-purple-700"
                 disabled={isLoading}
               >
                 {isLoading ? 'Signing in...' : 'Sign In'}
@@ -99,7 +99,7 @@ const SignIn: React.FC = () => {
             Don't have an account?{' '}
             <button 
               onClick={() => navigate('/signup')} 
-              className="text-tracksafe-blue hover:underline"
+              className="text-purple-600 hover:underline"
             >
               Sign up
             </button>

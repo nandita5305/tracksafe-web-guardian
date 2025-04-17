@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Phone, MapPin, Navigation, Settings, AlertTriangle, User, Hospital } from 'lucide-react';
+import { Home, Phone, MapPin, Navigation, Settings, User, Hospital } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 type MenuItemProps = {
   icon: React.ReactNode;
@@ -15,8 +16,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, isActive, onClick }) =
     <div
       className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors ${
         isActive
-          ? 'bg-tracksafe-blue text-white'
-          : 'hover:bg-tracksafe-light text-gray-700'
+          ? 'bg-purple-600 text-white'
+          : 'hover:bg-purple-50 text-gray-700'
       }`}
       onClick={onClick}
     >
@@ -29,6 +30,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, isActive, onClick }) =
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
   
   const menuItems = [
     {
@@ -64,7 +66,7 @@ const Sidebar: React.FC = () => {
   ];
 
   const handleSignOut = () => {
-    localStorage.removeItem('user');
+    logout();
     navigate('/signin');
   };
 
@@ -73,7 +75,7 @@ const Sidebar: React.FC = () => {
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <div className="text-2xl font-bold">
-            Track<span className="text-tracksafe-blue">Safe</span>
+            Track<span className="text-purple-600">Safe</span>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,75 +22,92 @@ import PrivateRoute from "./components/PrivateRoute";
 // Create a new QueryClient instance outside of the component
 const queryClient = new QueryClient();
 
-const App = () => (
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/health-questions" element={<HealthQuestions />} />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/emergency-contacts" 
-                element={
-                  <PrivateRoute>
-                    <EmergencyContacts />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/nearby-hospitals" 
-                element={
-                  <PrivateRoute>
-                    <NearbyHospitals />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/location-logs" 
-                element={
-                  <PrivateRoute>
-                    <LocationLogs />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/live-map" 
-                element={
-                  <PrivateRoute>
-                    <LiveMap />
-                  </PrivateRoute>
-                } 
-              />
-              <Route 
-                path="/settings" 
-                element={
-                  <PrivateRoute>
-                    <Settings />
-                  </PrivateRoute>
-                } 
-              />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
-);
+const App = () => {
+  // Ask for location permission when the app loads
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'prompt') {
+          navigator.geolocation.getCurrentPosition(
+            () => {}, // Success callback - do nothing
+            () => {}, // Error callback - do nothing
+            { enableHighAccuracy: true }
+          );
+        }
+      });
+    }
+  }, []);
+
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/signin" element={<SignIn />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/health-questions" element={<HealthQuestions />} />
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <PrivateRoute>
+                      <Dashboard />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/emergency-contacts" 
+                  element={
+                    <PrivateRoute>
+                      <EmergencyContacts />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/nearby-hospitals" 
+                  element={
+                    <PrivateRoute>
+                      <NearbyHospitals />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/location-logs" 
+                  element={
+                    <PrivateRoute>
+                      <LocationLogs />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/live-map" 
+                  element={
+                    <PrivateRoute>
+                      <LiveMap />
+                    </PrivateRoute>
+                  } 
+                />
+                <Route 
+                  path="/settings" 
+                  element={
+                    <PrivateRoute>
+                      <Settings />
+                    </PrivateRoute>
+                  } 
+                />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;

@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useAuth } from '@/context/AuthContext';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
@@ -27,6 +28,7 @@ const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const { signup } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,18 +50,15 @@ const SignUp: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // This is where you would connect to Supabase for registration
-      // For now we'll simulate a successful signup
-      localStorage.setItem('user', JSON.stringify({ 
-        name: values.name, 
-        email: values.email,
+      await signup(values.email, values.password, {
+        name: values.name,
         phone: values.phone,
         emergencyContact: values.emergencyContact
-      }));
+      });
       toast.success('Signed up successfully!');
       navigate('/health-questions');
-    } catch (error) {
-      toast.error('Failed to sign up. Please try again.');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign up. Please try again.');
       console.error('Signup error:', error);
     } finally {
       setIsLoading(false);
@@ -67,11 +66,11 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-tracksafe-light p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-purple-50 p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-2 text-center">
           <CardTitle className="text-3xl font-bold">
-            Track<span className="text-tracksafe-blue">Safe</span>
+            Track<span className="text-purple-600">Safe</span>
           </CardTitle>
           <CardDescription>
             {step === 1 ? 'Create your account' : 'Add your emergency details'}
@@ -167,7 +166,7 @@ const SignUp: React.FC = () => {
               )}
               <Button
                 type="submit"
-                className="w-full bg-tracksafe-blue hover:bg-tracksafe-teal"
+                className="w-full bg-purple-600 hover:bg-purple-700"
                 disabled={isLoading}
               >
                 {step === 1 ? 'Next' : isLoading ? 'Signing up...' : 'Sign Up'}
@@ -180,7 +179,7 @@ const SignUp: React.FC = () => {
             Already have an account?{' '}
             <button 
               onClick={() => navigate('/signin')} 
-              className="text-tracksafe-blue hover:underline"
+              className="text-purple-600 hover:underline"
             >
               Sign in
             </button>

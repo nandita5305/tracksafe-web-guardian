@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 const formSchema = z.object({
   hasHeartCondition: z.boolean(),
@@ -23,6 +25,7 @@ const formSchema = z.object({
 const HealthQuestions: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { user, updateProfile } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,20 +42,17 @@ const HealthQuestions: React.FC = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      // In a real app, we'd save this to the user's profile in Supabase
-      // For now, we'll store in localStorage
-      const user = localStorage.getItem('user');
-      if (user) {
-        const userData = JSON.parse(user);
-        localStorage.setItem('user', JSON.stringify({ 
-          ...userData, 
-          healthInfo: values 
-        }));
+      if (!user) {
+        throw new Error('No user logged in');
       }
+      
+      // Update health info in the profiles table
+      await updateProfile({ health_info: values });
+      
       toast.success('Health information saved successfully!');
       navigate('/dashboard');
-    } catch (error) {
-      toast.error('Failed to save health information.');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to save health information.');
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
@@ -60,11 +60,11 @@ const HealthQuestions: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-tracksafe-light p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-purple-50 p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-2 text-center">
           <CardTitle className="text-3xl font-bold">
-            Health <span className="text-tracksafe-blue">Information</span>
+            Health <span className="text-purple-600">Information</span>
           </CardTitle>
           <CardDescription>
             This information will help in emergency situations
@@ -192,7 +192,7 @@ const HealthQuestions: React.FC = () => {
               
               <Button
                 type="submit"
-                className="w-full bg-tracksafe-blue hover:bg-tracksafe-teal"
+                className="w-full bg-purple-600 hover:bg-purple-700"
                 disabled={isLoading}
               >
                 {isLoading ? 'Saving...' : 'Complete Setup'}
