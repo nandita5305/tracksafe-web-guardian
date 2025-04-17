@@ -2,7 +2,7 @@
 import React from 'react';
 import Sidebar from "@/components/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Hospital, MapPin, PoliceIcon } from 'lucide-react';
+import { AlertTriangle, Hospital, MapPin, Shield } from 'lucide-react';
 import Button from "@/components/Button";
 import { toast } from 'sonner';
 
@@ -10,27 +10,6 @@ const LiveMap: React.FC = () => {
   const handleRefreshLocation = () => {
     toast.info("Refreshing your location...");
   };
-
-  // This would be a custom icon for police stations
-  const PoliceIcon = (props: any) => (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m12 2-8 4 8 4 8-4-8-4z" />
-      <path d="M4 10v6l8 4" />
-      <path d="M12 20v-6" />
-      <path d="M20 10v6l-8 4" />
-    </svg>
-  );
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -98,7 +77,7 @@ const LiveMap: React.FC = () => {
                   </div>
 
                   <div className="p-3 bg-indigo-50 rounded-lg flex items-start gap-3">
-                    <PoliceIcon className="text-indigo-600 h-5 w-5 mt-0.5" />
+                    <Shield className="text-indigo-600 h-5 w-5 mt-0.5" />
                     <div>
                       <p className="font-medium">Delhi Police Station</p>
                       <p className="text-sm">1.8 miles away</p>
