@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { toast } from 'sonner';
 
@@ -29,18 +29,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isSupabaseConfigured, setIsSupabaseConfigured] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check if Supabase is configured
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    
-    if (supabaseUrl && supabaseAnonKey) {
-      setIsSupabaseConfigured(true);
-    } else {
+    // Don't attempt to check session if Supabase isn't configured
+    if (!isSupabaseConfigured) {
       setIsLoading(false);
-      return; // Don't attempt to check session if Supabase isn't configured
+      return;
     }
 
     // Check if user is logged in from Supabase
@@ -176,6 +170,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (profileError) throw profileError;
         
         setUser(data.user);
+        
+        // Also set the profile data locally
+        setProfile({
+          email: data.user.email || '',
+          name: userData.name,
+          phone: userData.phone,
+          emergency_contact: userData.emergencyContact
+        });
       }
     } catch (error: any) {
       throw new Error(error.message || 'Failed to sign up');
