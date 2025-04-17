@@ -11,6 +11,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from '@/context/AuthContext';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -20,7 +22,7 @@ const formSchema = z.object({
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isSupabaseConfigured } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,6 +33,11 @@ const SignIn: React.FC = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!isSupabaseConfigured) {
+      toast.error('Please connect your project to Supabase to enable authentication.');
+      return;
+    }
+    
     setIsLoading(true);
     try {
       await login(values.email, values.password);
@@ -56,6 +63,14 @@ const SignIn: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {!isSupabaseConfigured && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Supabase connection not detected. Please connect your project to Supabase to enable authentication.
+              </AlertDescription>
+            </Alert>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -87,7 +102,7 @@ const SignIn: React.FC = () => {
               <Button
                 type="submit"
                 className="w-full bg-purple-600 hover:bg-purple-700"
-                disabled={isLoading}
+                disabled={isLoading || !isSupabaseConfigured}
               >
                 {isLoading ? 'Signing in...' : 'Sign In'}
               </Button>
